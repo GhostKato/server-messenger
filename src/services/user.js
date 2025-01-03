@@ -1,5 +1,9 @@
 import { UsersCollection } from '../db/models/user.js';
 import bcrypt from 'bcrypt';
+import mongoose from 'mongoose';
+import createHttpError from 'http-errors';
+
+
 
 
 export const updateUser = async (payload) => {
@@ -32,5 +36,21 @@ export const updateUser = async (payload) => {
     throw error;
   }
 };
+
+
+export const getUsers = async ({ userId }) => {
+
+  const excludedUserId = new mongoose.Types.ObjectId(userId);
+
+  const users = await UsersCollection.find({ _id: { $ne: excludedUserId } }).toArray();
+
+  if (!users.length) {
+    console.log('No other users found.');
+    throw createHttpError(404, 'No other users found');
+  }
+
+  return users;
+};
+
 
 

@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
-import { sendMessage, updateUser } from '../services/user.js';
+import { getUsers, updateUser } from '../services/user.js';
 import { UsersCollection } from '../db/models/user.js';
 import { saveImage } from '../utils/saveImage.js';
 import { BASE_URL_USER_PHOTO } from '../constants/index.js';
@@ -46,3 +46,18 @@ export const updateUserController = async (req, res, next) => {
     next(createHttpError(500, 'An error occurred while updating the user.'));
   }
 };
+
+
+export const getUsersController = async (req, res) => {
+
+  const users = await getUsers({userId: req.user._id});
+
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully found users!',
+    data: users,
+  });
+};
+
+
+
