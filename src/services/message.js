@@ -1,6 +1,11 @@
 import { MessagesCollection } from '../db/models/message.js';
 
-export const createMessage = async (payload) => {
-  const message = await MessagesCollection.create(payload);
-  return message;
+export const createMessage = async ({ message, to, from }) => {
+  const newMessage = await MessagesCollection.create({
+    message,
+    to,
+    from, 
+  });
+  return newMessage;
 };
+

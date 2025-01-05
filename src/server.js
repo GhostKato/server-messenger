@@ -17,13 +17,13 @@ export const setupServer = () => {
   credentials: true,
 }));
   app.use(cookieParser());
-  app.use(
-    pino({
-      transport: {
-        target: 'pino-pretty',
-      },
-    }),
-  );
+  // app.use(
+  //   pino({
+  //     transport: {
+  //       target: 'pino-pretty',
+  //     },
+  //   }),
+  // );
   app.use(router);
   app.use('/uploads', express.static(UPLOAD_PATH));
   app.use(express.static('public'));

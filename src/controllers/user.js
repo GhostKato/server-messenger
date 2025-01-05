@@ -50,7 +50,7 @@ export const updateUserController = async (req, res, next) => {
 
 export const getUsersController = async (req, res) => {
 
-  const users = await getUsers({userId: req.user._id});
+  const users = await getUsers({id: req._id});
 
   res.status(200).json({
     status: 200,

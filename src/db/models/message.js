@@ -10,7 +10,12 @@ const messageSchema = new Schema(
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'users',
-    }
+    },
+    to: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: 'users',
+    },
   },
   {
     timestamps: true,
@@ -19,3 +24,4 @@ const messageSchema = new Schema(
 );
 
 export const MessagesCollection = model('message', messageSchema);
+

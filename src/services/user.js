@@ -38,18 +38,23 @@ export const updateUser = async (payload) => {
 };
 
 
-export const getUsers = async ({ userId }) => {
+export const getUsers = async ({ id }) => {
+  try {
 
-  const excludedUserId = new mongoose.Types.ObjectId(userId);
+    const excludedUserId = new mongoose.Types.ObjectId(id);
 
-  const users = await UsersCollection.find({ _id: { $ne: excludedUserId } }).toArray();
+    const users = await UsersCollection.find({ _id: { $ne: excludedUserId } });
 
-  if (!users.length) {
-    console.log('No other users found.');
-    throw createHttpError(404, 'No other users found');
+    if (!users || users.length === 0) {
+      console.log('No other users found.');
+      throw createHttpError(404, 'No other users found');
+    }
+
+    return users;
+  } catch (error) {
+    console.error('Помилка отримання користувачів:', error.message);
+    throw createHttpError(500, 'Internal Server Error');
   }
-
-  return users;
 };
 
 
