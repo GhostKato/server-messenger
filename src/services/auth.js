@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { UsersCollection } from '../db/models/user.js';
 import createHttpError from 'http-errors';
-import { FIFTEEN_MINUTES, THIRTY_DAYS, SMTP_ENV_VARS, APP_DOMAIN, JWT_SECRET, BASE_URL_USER_PHOTO } from '../constants/index.js';
+import { FIFTEEN_MINUTES, THIRTY_DAYS, SMTP_ENV_VARS, APP_DOMAIN, JWT_SECRET } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/session.js';
 import { env } from '../utils/env.js';
 import jwt from 'jsonwebtoken';
