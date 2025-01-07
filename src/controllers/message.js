@@ -1,6 +1,6 @@
 import createHttpError from "http-errors";
 import mongoose from "mongoose"; // Для перетворення ObjectId
-import { createMessage } from "../services/message.js";
+import { createMessage, deleteMessage } from "../services/message.js";
 import { UsersCollection } from "../db/models/user.js"; // Додайте модель користувача, якщо ще не підключена
 
 export const createMessageController = async (req, res) => {
@@ -55,4 +55,17 @@ export const createMessageController = async (req, res) => {
     console.error('Error creating message:', error);
     throw createHttpError(500, 'Internal Server Error');
   }
+};
+
+
+export const deleteMessageController = async (req, res, next) => {
+  const { messageId } = req.params;
+  const contact = await deleteMessage(messageId, req.user._id);
+
+  if (!contact) {
+    next(createHttpError(404, 'Contact not found'));
+    return;
+  }
+
+  res.status(204).send();
 };
