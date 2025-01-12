@@ -116,4 +116,4 @@ This project is the server part of the messenger, in which you can send messages
 
 ---
 
-The project is developing a server for managing contacts through the API, with support for authorization through JWT and Google. It provides contact storage in MongoDB, filtering, data updates and password recovery. For security, HTTPS, bcrypt and cloud storage of photos via Cloudinary are used. The project is focused on scalability, ease of integration and a high level of data protection.
+The project is developing a server for sending messages through the API, with support for authorization through JWT and Google. It provides message storage in MongoDB, data updates and password recovery. For security, HTTPS, bcrypt and cloud storage of photos via Cloudinary are used. The project is focused on scalability, ease of integration and a high level of data protection.
