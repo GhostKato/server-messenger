@@ -35,7 +35,8 @@ This project is the server part of the messenger, in which you can send messages
 
   - Roouts to perform basic user operations, such as updating user data.
 
-  - `POST /user/:id` — updating user data. 
+  - `POST /user/:id` — updating user data.
+  - `GET /user/all` — get all users.  
 
 4. **Safety:**
 
