@@ -1,29 +1,43 @@
 import createHttpError from "http-errors";
-import mongoose from "mongoose"; // Для перетворення ObjectId
-import { createMessage, deleteMessage } from "../services/message.js";
-import { UsersCollection } from "../db/models/user.js"; // Додайте модель користувача, якщо ще не підключена
+import mongoose from "mongoose";
+import { getAllMessages, createMessage, updateMessage, deleteMessage } from "../services/message.js";
+import { UsersCollection } from "../db/models/user.js";
+import { MessagesCollection } from "../db/models/message.js";
+
+
+export const getMessageController = async (req, res) => {
+  try {
+    const messages = await getAllMessages({ userId: req.user._id });
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully found messages!',
+      data: messages,
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      message: 'Failed to fetch messages!',
+      error: error.message,
+    });
+  }
+};
+
 
 export const createMessageController = async (req, res) => {
   const { message, to } = req.body;
-
-  // console.log(req.body);
-  // console.log(to);
-  // console.log(message);
 
 
   if (!message) {
     throw createHttpError(400, 'Missing required field: message');
   }
 
-  // Перевірка на наявність користувача, що надсилає повідомлення
   if (!req.user || !req.user._id) {
     throw createHttpError(401, 'User is not authenticated');
   }
 
   const from = req.user._id;
-  // console.log(req.user._id);
 
-  // Перетворення ID отримувача на ObjectId
   let toUserId;
   try {
     toUserId = new mongoose.Types.ObjectId(to);
@@ -33,7 +47,6 @@ export const createMessageController = async (req, res) => {
     throw createHttpError(400, 'Invalid recipient ID');
   }
 
-  // Перевірка, чи існує користувач, якому надсилається повідомлення
   const recipientExists = await UsersCollection.findById(toUserId);
   if (!recipientExists) {
     throw createHttpError(404, 'Recipient user not found');
@@ -58,12 +71,49 @@ export const createMessageController = async (req, res) => {
 };
 
 
+export const updateMessageController = async (req, res, next) => {
+  try {
+    const { messageId } = req.params;
+    const { _id } = req.user;
+
+    const message = await MessagesCollection.findOne({ _id: messageId });
+    if (!message) {
+      console.log(`Message with ID ${messageId} not found.`);
+      return next(createHttpError(404, 'Message not found'));
+    }
+
+    if (message.from.toString() !== _id.toString()) {
+
+      console.log('User is not authorized to update this message.');
+      return next(createHttpError(403, 'User not authorized to update this message'));
+    }
+
+    const updatedMessage = await updateMessage(messageId, _id, { ...req.body });
+    if (!updatedMessage) {
+      console.log('Failed to update message.');
+      return next(createHttpError(500, 'Failed to update message'));
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully updated the message!',
+      data: updatedMessage,
+    });
+  } catch (error) {
+    console.error('Error updating message:', error);
+    return next(createHttpError(500, 'An error occurred while updating the message.'));
+  }
+};
+
+
 export const deleteMessageController = async (req, res, next) => {
   const { messageId } = req.params;
-  const contact = await deleteMessage(messageId, req.user._id);
+  const { _id } = req.user;
 
-  if (!contact) {
-    next(createHttpError(404, 'Contact not found'));
+  const message = await deleteMessage(messageId, _id);
+
+  if (!message) {
+    next(createHttpError(404, 'Message not found'));
     return;
   }
 
