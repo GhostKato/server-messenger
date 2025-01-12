@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is the server part of the system for storing, organizing and managing telephone numbers. The server provides an API that allows you to work effectively with the contact library, support user authorization, data synchronization, search, and also provides the ability to store metadata about contacts, filter and process requests. The server processes requests from front-end clients, processes them, and responds with the appropriate data.
+This project is the server part of the messenger, in which you can send messages to other users. The server provides an API that allows you to communicate, support user authorization, data synchronization, search, and also provides the ability to store messages, user data and process requests. The server processes requests from clients, processes them and responds with the appropriate data.
 
 ## Features
 
@@ -11,15 +11,11 @@ This project is the server part of the system for storing, organizing and managi
    - Secure password change through tokens (JWT) for increased protection of personal libraries.
    - Quick authorization and login through google accounts.
 
-2. **Contact Storage and Management:**
+2. **Storage and management messages:**
 
-   - Contacts are stored in a database with data such as name, number, contact type, mail, and metadata.
+   - Messages are stored in a database with such data, message text, sender, recipient and metadata.
 
-3. **Filtering:**
-
-   - Filter by favorite contacts.
-
-4. **API for frontend interaction:**
+3. **API for frontend interaction:**
 
    - Roouts for performing basic operations such as: registration, authorization, update, end of session, sending mail, new password.
 
@@ -30,19 +26,18 @@ This project is the server part of the system for storing, organizing and managi
    - `POST /auth/send-reset-email` — sending mail for password reset.
    - `POST /auth/reset-pwd` — sending a new password.
 
-- Roouts for performing basic operations with contacts such as: giving a contact, receiving a contact list and a filtered list, updating contact data, deleting a contact.
+  - Roouts for performing basic operations with messages, such as: sending a message, receiving a list of messages, updating a message, deleting a message.
 
-  - `POST /contacts` — adding a new contact.
-  - `GET /contacts` — getting contact list and filtered list.
-  - `PATСH /contacts/:id` — update contact data.
-  - `DELETE /contacts/:id` — deleting a contact.
+  - `POST /message` — adding a new message.
+  - `GET /message` — getting message list.
+  - `PATСH /message/:id` — update  message.
+  - `DELETE /message/:id` — deleting a message.
 
-  - Roouts to perform basic user operations, such as updating user data, sending messages to mail.
+  - Roouts to perform basic user operations, such as updating user data.
 
-  - `POST /user/:id` — updating user data.
-  - `POST /user/send-message` — sending a message to mail.
+  - `POST /user/:id` — updating user data. 
 
-5. **Safety:**
+4. **Safety:**
 
    - Using HTTPS for Secure Connections.
    - Encrypting user passwords using algorithms such as bcrypt.
@@ -55,12 +50,12 @@ This project is the server part of the system for storing, organizing and managi
    - **MongoDB**
    - Collections to store:
      - **users**: user data.
-     - **contacts**: contact data.
+     - **message**: message data.
      - **sessions**: data sessions.
 
 2. **Storage in the cloud:**
 
-   - Storing photos of users and contacts using cloud storage сloudinary.
+   - Store user photos with cloud storage.
 
 3. **Middleware:**
 
@@ -81,14 +76,14 @@ This project is the server part of the system for storing, organizing and managi
    - Middleware development for authentication and error handling.
 
 2. **Development of functionality:**
-   - Implementation of operations for contacts, users.
-   - Creating mechanisms for loading and storing user and contact photos.
+   - Performing operations for messages, users.
+   - Creating mechanisms for loading and storing user photos.
 
 ## Advantages of the server side
 
 - **Scalability:** The server can handle large volumes of contacts and support thousands of simultaneous users.
 - **Convenience:** API makes it easy to integrate the server with various front-end interfaces, mobile applications or other services.
-- **Safety:** The use of modern encryption and data protection methods guarantees the security of both contacts and user data.
+- **Safety:** The use of modern encryption and data protection methods guarantees the security of both messages and user data.
 
 ## Technologies used
 
