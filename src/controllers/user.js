@@ -39,7 +39,14 @@ export const updateUserController = async (req, res, next) => {
     res.status(200).json({
       status: 200,
       message: 'Successfully updated the user!',
-      data: updatedUser,
+      data: {
+      user: {
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        photo: updatedUser.photo,
+      },
+    },
     });
   } catch (error) {
     console.error('Error updating user:', error);
