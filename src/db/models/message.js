@@ -6,12 +6,12 @@ const messageSchema = new Schema(
       type: String,
       required: true,
     },
-    from: {
+    fromId: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'users',
     },
-    to: {
+    toId: {
       type: Schema.Types.ObjectId,
       required: true,
       ref: 'users',

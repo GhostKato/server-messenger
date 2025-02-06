@@ -4,8 +4,6 @@ import mongoose from 'mongoose';
 import createHttpError from 'http-errors';
 
 
-
-
 export const updateUser = async (payload) => {
   try {
 

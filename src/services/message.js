@@ -2,17 +2,17 @@ import { MessagesCollection } from '../db/models/message.js';
 import createHttpError from 'http-errors';
 
 
-export const getAllMessages = async ({ from, to }) => {
-  // Перевірка на наявність відправника та отримувача
-  if (!from || !to) {
+export const getAllMessages = async ({ fromId, toId }) => {
+
+  if (!fromId || !toId) {
     throw new Error('Missing required parameters: from or to');
   }
 
   try {
     const messages = await MessagesCollection.find({
       $or: [
-        { from, to },
-        { to, from }, // Запит на повідомлення від отримувача до відправника
+        { fromId, toId },
+        { toId, fromId },
       ]
     }).exec();
 
@@ -26,16 +26,16 @@ export const getAllMessages = async ({ from, to }) => {
 };
 
 
-export const createMessage = async ({ message, to, from }) => {
-  if (!message || !to || !from) {
+export const createMessage = async ({ message, toId, fromId }) => {
+  if (!message || !toId || !fromId) {
     throw createHttpError(400, 'Missing required fields: message, to, or from');
   }
 
   try {
     const newMessage = await MessagesCollection.create({
       message,
-      to,
-      from,
+      toId,
+      fromId,
     });
 
     return newMessage;
@@ -46,23 +46,15 @@ export const createMessage = async ({ message, to, from }) => {
 };
 
 
-export const updateMessage = async (messageId, userId, payload, options = {}) => {
+export const updateMessage = async (messageId, payload) => {
   try {
-    const updatedMessage = await MessagesCollection.findOneAndUpdate(
-      { _id: messageId, from: userId },
+    const updatedMessage = await MessagesCollection.findByIdAndUpdate(
+      messageId,
       payload,
-      {
-        new: true,
-        ...options,
-      }
+      { new: true }
     );
 
-    if (!updatedMessage) return null;
-
-    return {
-      message: updatedMessage,
-      isNew: Boolean(updatedMessage?._id),
-    };
+    return updatedMessage || null;
   } catch (error) {
     console.error('Error updating message:', error);
     throw new Error('Failed to update message');
@@ -70,11 +62,6 @@ export const updateMessage = async (messageId, userId, payload, options = {}) =>
 };
 
 
-export const deleteMessage = async (messageId, userId) => {
-  const message = await MessagesCollection.findOneAndDelete({
-    _id: messageId,
-    from: userId
-  });
-
-  return message;
+export const deleteMessage = async (messageId) => {
+  return await MessagesCollection.findByIdAndDelete(messageId);
 };

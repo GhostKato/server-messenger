@@ -13,8 +13,8 @@ export const setupServer = () => {
   const app = express();
   app.use(express.json());
   app.use(cors({
-      //  origin: 'https://app-messenger-seven.vercel.app',
-    origin: 'http://localhost:3001',
+       origin: 'https://app-messenger-seven.vercel.app',
+    // origin: 'http://localhost:3001',
   credentials: true,
 }));
   app.use(cookieParser());

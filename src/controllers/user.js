@@ -4,6 +4,7 @@ import { UsersCollection } from '../db/models/user.js';
 import { saveImage } from '../utils/saveImage.js';
 import { BASE_URL_USER_PHOTO } from '../constants/index.js';
 
+
 export const updateUserController = async (req, res, next) => {
 
   try {
