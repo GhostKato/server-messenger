@@ -28,10 +28,10 @@ This project is the server part of the messenger, in which you can send messages
 
   - Roouts for performing basic operations with messages, such as: sending a message, receiving a list of messages, updating a message, deleting a message.
 
-    - `POST /message` — adding a new message.
-    - `GET /message` — getting message list.
-    - `PATСH /message/:id` — update  message.
-    - `DELETE /message/:id` — deleting a message.
+    - `POST /message/:toId` — adding a new message.
+    - `GET /message/:toId` — getting message list.
+    - `PATСH /message/:messageId` — update  message.
+    - `DELETE /message/:messageId` — deleting a message.
 
   - Roouts to perform basic user operations, such as updating user data.
 
