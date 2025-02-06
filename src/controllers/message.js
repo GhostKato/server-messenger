@@ -1,13 +1,16 @@
 import createHttpError from "http-errors";
-import mongoose from "mongoose";
 import { getAllMessages, createMessage, updateMessage, deleteMessage } from "../services/message.js";
 import { UsersCollection } from "../db/models/user.js";
 import { MessagesCollection } from "../db/models/message.js";
-
+import mongoose from 'mongoose';
 
 export const getMessageController = async (req, res) => {
+
+  const from = req.user._id;
+  const { to } = req.query;
+
   try {
-    const messages = await getAllMessages({ userId: req.user._id });
+    const messages = await getAllMessages({ from, to });
 
     res.status(200).json({
       status: 200,
@@ -25,8 +28,8 @@ export const getMessageController = async (req, res) => {
 
 
 export const createMessageController = async (req, res) => {
-  const { message, to } = req.body;
-
+  const { message } = req.body;
+  const { to } = req.query;
 
   if (!message) {
     throw createHttpError(400, 'Missing required field: message');
@@ -38,16 +41,11 @@ export const createMessageController = async (req, res) => {
 
   const from = req.user._id;
 
-  let toUserId;
-  try {
-    toUserId = new mongoose.Types.ObjectId(to);
-
-  } catch (error) {
-    console.log(toUserId);
+  if (!mongoose.Types.ObjectId.isValid(to)) {
     throw createHttpError(400, 'Invalid recipient ID');
   }
 
-  const recipientExists = await UsersCollection.findById(toUserId);
+  const recipientExists = await UsersCollection.findById(to);
   if (!recipientExists) {
     throw createHttpError(404, 'Recipient user not found');
   }
@@ -55,7 +53,7 @@ export const createMessageController = async (req, res) => {
   try {
     const newMessage = await createMessage({
       message,
-      to: toUserId,
+      to,
       from,
     });
 
@@ -69,6 +67,7 @@ export const createMessageController = async (req, res) => {
     throw createHttpError(500, 'Internal Server Error');
   }
 };
+
 
 
 export const updateMessageController = async (req, res, next) => {

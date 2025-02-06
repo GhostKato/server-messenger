@@ -1,28 +1,48 @@
 import { MessagesCollection } from '../db/models/message.js';
+import createHttpError from 'http-errors';
 
 
-export const getAllMessages = async ({ userId }) => {
+export const getAllMessages = async ({ from, to }) => {
+  // Перевірка на наявність відправника та отримувача
+  if (!from || !to) {
+    throw new Error('Missing required parameters: from or to');
+  }
 
-  const messages = await MessagesCollection.find({
-    $or: [
-      { from: userId },
-      { to: userId }
-    ]
-  }).exec();
+  try {
+    const messages = await MessagesCollection.find({
+      $or: [
+        { from, to },
+        { to, from }, // Запит на повідомлення від отримувача до відправника
+      ]
+    }).exec();
 
-  return {
-    data: messages,
-  };
+    return {
+      data: messages,
+    };
+  } catch (error) {
+    console.error('Error fetching messages:', error);
+    throw new Error('Failed to fetch messages');
+  }
 };
 
 
 export const createMessage = async ({ message, to, from }) => {
-  const newMessage = await MessagesCollection.create({
-    message,
-    to,
-    from,
-  });
-  return newMessage;
+  if (!message || !to || !from) {
+    throw createHttpError(400, 'Missing required fields: message, to, or from');
+  }
+
+  try {
+    const newMessage = await MessagesCollection.create({
+      message,
+      to,
+      from,
+    });
+
+    return newMessage;
+  } catch (error) {
+    console.error('Error creating message:', error);
+    throw createHttpError(500, 'Failed to create message');
+  }
 };
 
 
