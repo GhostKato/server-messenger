@@ -12,12 +12,12 @@ export const getAllMessages = async ({ fromId, toId }) => {
     const messages = await MessagesCollection.find({
       $or: [
         { fromId, toId },
-        { toId, fromId },
+        { fromId: toId, toId: fromId },
       ]
     }).exec();
 
     return {
-      data: messages,
+      messages,
     };
   } catch (error) {
     console.error('Error fetching messages:', error);
