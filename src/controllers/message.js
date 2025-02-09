@@ -86,7 +86,7 @@ export const updateMessageController = async (req, res, next) => {
     res.status(200).json({
       status: 200,
       message: 'Successfully updated the message!',
-      data: updatedMessage,
+      updatedMessage,
     });
   } catch (error) {
     console.error('Error updating message:', error);
