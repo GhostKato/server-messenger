@@ -8,23 +8,21 @@ import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
 import { UPLOAD_PATH } from './constants/index.js';
+import http from 'http';
+import { setupSocket } from './utils/socket.js';
 
 export const setupServer = () => {
   const app = express();
+
+  const server = http.createServer(app);
+
+  setupSocket(server);
+
   app.use(express.json());
-  app.use(cors({
-       origin: 'https://app-messenger-seven.vercel.app',
-    // origin: 'http://localhost:3001',
-  credentials: true,
-}));
+  // app.use(cors({ origin: 'http://localhost:3001', credentials: true }));
+  app.use(cors({ origin: 'https://app-messenger-seven.vercel.app', credentials: true }));
   app.use(cookieParser());
-  app.use(
-    pino({
-      transport: {
-        target: 'pino-pretty',
-      },
-    }),
-  );
+  app.use(pino({ transport: { target: 'pino-pretty' } }));
   app.use(router);
   app.use('/uploads', express.static(UPLOAD_PATH));
   app.use(express.static('public'));
@@ -32,7 +30,7 @@ export const setupServer = () => {
   app.use(errorHandler);
 
   const PORT = Number(env(PORT_ENV_VAR, '3000'));
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 };

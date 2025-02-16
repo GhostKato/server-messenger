@@ -2,6 +2,7 @@ import createHttpError from "http-errors";
 import { getAllMessages, createMessage, updateMessage, deleteMessage } from "../services/message.js";
 import { UsersCollection } from "../db/models/user.js";
 import mongoose from 'mongoose';
+import { sendMessageToClients } from '../utils/socket.js';
 
 export const getMessageController = async (req, res) => {
 
@@ -10,7 +11,7 @@ export const getMessageController = async (req, res) => {
 
   try {
     const messages = await getAllMessages({ fromId, toId });
-
+    
     res.status(200).json({
       status: 200,
       message: 'Successfully found messages!',
@@ -56,6 +57,8 @@ export const createMessageController = async (req, res) => {
       fromId,
     });
 
+    sendMessageToClients('newMessage', newMessage);
+
     res.status(201).json({
       status: 201,
       message: 'Successfully created a message!',
@@ -83,6 +86,8 @@ export const updateMessageController = async (req, res, next) => {
       return next(createHttpError(404, 'Message not found or update failed'));
     }
 
+    sendMessageToClients('updateMessage', updatedMessage);
+
     res.status(200).json({
       status: 200,
       message: 'Successfully updated the message!',
@@ -103,6 +108,8 @@ export const deleteMessageController = async (req, res, next) => {
     if (!message) {
       return next(createHttpError(404, 'Message not found'));
     }
+
+    sendMessageToClients('deleteMessage', messageId);
 
     res.status(204).send();
   } catch (error) {
