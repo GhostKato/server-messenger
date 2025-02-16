@@ -28,8 +28,8 @@ export const ENABLE_CLOUDINARY = 'ENABLE_CLOUDINARY';
 export const FIFTEEN_MINUTES = 15 * 60 * 1000;
 export const THIRTY_DAYS = 30 * 24 * 60 * 60 * 1000;
 
-export const APP_DOMAIN = 'APP_DOMAIN';
-export const SERVER_DOMAIN = 'SERVER_DOMAIN';
+export const FRONTEND_DOMAIN = 'FRONTEND_DOMAIN';
+export const BACKEND_DOMAIN = 'BACKEND_DOMAIN';
 
 export const JWT_SECRET = 'JWT_SECRET';
 

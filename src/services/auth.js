@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { UsersCollection } from '../db/models/user.js';
 import createHttpError from 'http-errors';
-import { FIFTEEN_MINUTES, THIRTY_DAYS, SMTP_ENV_VARS, APP_DOMAIN, JWT_SECRET } from '../constants/index.js';
+import { FIFTEEN_MINUTES, THIRTY_DAYS, SMTP_ENV_VARS, FRONTEND_DOMAIN, JWT_SECRET } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/session.js';
 import { env } from '../utils/env.js';
 import jwt from 'jsonwebtoken';
@@ -107,7 +107,7 @@ export const requestResetToken = async (email) => {
   const template = handlebars.compile(templateSource);
   const html = template({
     name: user.name,
-    link: `${env(APP_DOMAIN)}/reset-password?token=${resetToken}`,
+    link: `${env(FRONTEND_DOMAIN)}/reset-password?token=${resetToken}`,
   });
   try {
     await sendLetter({

@@ -1,5 +1,5 @@
 import { Server } from 'socket.io';
-import { APP_DOMAIN } from '../constants/index.js';
+import { FRONTEND_DOMAIN } from '../constants/index.js';
 import { env } from '../utils/env.js';
 
 let io;
@@ -7,7 +7,7 @@ let io;
 export const setupSocket = (server) => {
   io = new Server(server, {
     cors: {
-      origin: env(APP_DOMAIN),  
+      origin: env(FRONTEND_DOMAIN),
       methods: ['GET', 'POST'],
       credentials: true,
     },
