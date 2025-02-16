@@ -2,6 +2,7 @@ import { UsersCollection } from '../db/models/user.js';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose';
 import createHttpError from 'http-errors';
+import { SORT_ORDER } from '../constants/index.js';
 
 
 export const updateUser = async (payload) => {
@@ -36,23 +37,16 @@ export const updateUser = async (payload) => {
 };
 
 
-export const getUsers = async ({ id }) => {
-  try {
+export const getUsers = async ({ sortOrder = SORT_ORDER.ASC, sortBy = 'name', id }) => {
+  const query = id ? { _id: { $ne: new mongoose.Types.ObjectId(id) } } : {};
+ 
+  const users = await UsersCollection.find(query).sort({ [sortBy]: sortOrder });
 
-    const excludedUserId = new mongoose.Types.ObjectId(id);
-
-    const users = await UsersCollection.find({ _id: { $ne: excludedUserId } });
-
-    if (!users || users.length === 0) {
-      console.log('No other users found.');
-      throw createHttpError(404, 'No other users found');
-    }
-
-    return users;
-  } catch (error) {
-    console.error('Помилка отримання користувачів:', error.message);
-    throw createHttpError(500, 'Internal Server Error');
+  if (!users.length) {
+    throw createHttpError(404, 'No other users found');
   }
+
+  return users;
 };
 
 

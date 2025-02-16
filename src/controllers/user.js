@@ -3,11 +3,13 @@ import { getUsers, updateUser } from '../services/user.js';
 import { UsersCollection } from '../db/models/user.js';
 import { saveImage } from '../utils/saveImage.js';
 import { BASE_URL_USER_PHOTO } from '../constants/index.js';
+import { parseSortParams } from '../utils/parseSortParams.js';
 
 
 export const updateUserController = async (req, res, next) => {
 
   try {
+
     const { userId } = req.params;
 
     const user = await UsersCollection.findOne({ _id: userId });
@@ -58,7 +60,8 @@ export const updateUserController = async (req, res, next) => {
 
 export const getUsersController = async (req, res) => {
 
-  const users = await getUsers({id: req._id});
+  const { sortBy, sortOrder } = parseSortParams(req.query);
+  const users = await getUsers({ sortBy, sortOrder, id: req.user._id });
 
   res.status(200).json({
     status: 200,
