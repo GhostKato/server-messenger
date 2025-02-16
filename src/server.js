@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import pino from 'pino-http';
 import cors from 'cors';
 import { env } from './utils/env.js';
-import { PORT_ENV_VAR } from './constants/index.js';
+import { PORT_ENV_VAR, APP_DOMAIN } from './constants/index.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 import router from './routers/index.js';
@@ -19,8 +19,7 @@ export const setupServer = () => {
   setupSocket(server);
 
   app.use(express.json());
-  // app.use(cors({ origin: 'http://localhost:3001', credentials: true }));
-  app.use(cors({ origin: 'https://app-messenger-seven.vercel.app', credentials: true }));
+  app.use(cors({ origin: env(APP_DOMAIN), credentials: true }));
   app.use(cookieParser());
   app.use(pino({ transport: { target: 'pino-pretty' } }));
   app.use(router);

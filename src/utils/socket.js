@@ -1,15 +1,16 @@
 import { Server } from 'socket.io';
+import { APP_DOMAIN } from '../constants/index.js';
+import { env } from '../utils/env.js';
 
 let io;
 
 export const setupSocket = (server) => {
   io = new Server(server, {
     cors: {
-      // origin: 'http://localhost:3001',
-      origin: 'https://app-messenger-seven.vercel.app',
+      origin: env(APP_DOMAIN),  
       methods: ['GET', 'POST'],
       credentials: true,
-    }
+    },
   });
 
   console.log("WebSocket сервер запущено");
