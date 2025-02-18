@@ -1,10 +1,19 @@
 import createHttpError from 'http-errors';
-import { registerUser, refreshUsersSession, logoutUser, requestResetToken, resetPassword, loginOrSignupWithGoogle } from '../services/auth.js';
+import {
+  registerUser,
+  refreshUsersSession,
+  logoutUser,
+  requestResetToken,
+  resetPassword,
+  loginOrSignupWithGoogle,
+} from '../services/auth.js';
 import { loginUser } from '../services/auth.js';
 import { THIRTY_DAYS } from '../constants/index.js';
 import { generateAuthUrl } from '../utils/googleOAuth2.js';
 import { UsersCollection } from '../db/models/user.js';
 import { BASE_URL_USER_PHOTO } from '../constants/index.js';
+import { sendUserStatusToClients } from '../utils/socket.js';
+import { SessionsCollection } from '../db/models/session.js';
 
 const setupSession = (res, session) => {
   res.cookie('refreshToken', session.refreshToken, {
@@ -28,10 +37,7 @@ export const registerUserController = async (req, res) => {
   const photoUrl = BASE_URL_USER_PHOTO;
 
   if (!name || !email || !password) {
-    throw createHttpError(
-      400,
-      'Missing required fields: name, email or password',
-    );
+    throw createHttpError(400, 'Missing required fields: name, email or password');
   }
 
   await registerUser({ name, email, photo: photoUrl, password });
@@ -55,6 +61,8 @@ export const loginUserController = async (req, res) => {
 
   setupSession(res, session);
 
+  sendUserStatusToClients(user._id, 'online');
+
   res.json({
     status: 200,
     message: 'Successfully logged in an user!',
@@ -65,7 +73,8 @@ export const loginUserController = async (req, res) => {
         name: user.name,
         email: user.email,
         photo: user.photo,
-           },
+        status: user.status,
+      },
     },
   });
 };
@@ -95,6 +104,7 @@ export const refreshUserSessionController = async (req, res) => {
         name: user.name,
         email: user.email,
         photo: user.photo,
+        status: user.status,
       },
     },
   });
@@ -102,12 +112,15 @@ export const refreshUserSessionController = async (req, res) => {
 
 
 export const logoutUserController = async (req, res) => {
-  if (req.cookies.sessionId) {
-    await logoutUser(req.cookies.sessionId);
+  const sessionId = req.cookies.sessionId;
+  const session = await SessionsCollection.findOne({ _id: sessionId });
+  sendUserStatusToClients(session.userId, "offline");
+  if (sessionId) {
+    await logoutUser(sessionId);
   }
 
-  res.clearCookie('sessionId');
-  res.clearCookie('refreshToken');
+  res.clearCookie("sessionId");
+  res.clearCookie("refreshToken");
 
   res.status(204).send();
 };
@@ -156,6 +169,9 @@ export const loginWithGoogleController = async (req, res) => {
     }
     const { session, user } = await loginOrSignupWithGoogle(code);
     setupSession(res, session);
+
+    sendUserStatusToClients(user._id, 'online');
+
     res.json({
       status: 200,
       message: 'Successfully logged in via Google OAuth!',
@@ -166,6 +182,7 @@ export const loginWithGoogleController = async (req, res) => {
           email: user.email,
           photo: user.photo || BASE_URL_USER_PHOTO,
           _id: user._id,
+          status: user.status,
         },
       },
     });

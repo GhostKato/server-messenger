@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 import { UsersCollection } from '../db/models/user.js';
 import createHttpError from 'http-errors';
-import { FIFTEEN_MINUTES, THIRTY_DAYS, SMTP_ENV_VARS, FRONTEND_DOMAIN, JWT_SECRET } from '../constants/index.js';
+import { FIFTEEN_MINUTES, THIRTY_DAYS, JWT_SECRET } from '../constants/index.js';
 import { SessionsCollection } from '../db/models/session.js';
 import { env } from '../utils/env.js';
 import jwt from 'jsonwebtoken';
@@ -12,7 +12,6 @@ import fs from 'node:fs/promises';
 import handlebars from 'handlebars';
 import { TEMPLATES_PATH } from '../constants/index.js';
 import { getFullNameFromGoogleTokenPayload, validateCode } from '../utils/googleOAuth2.js';
-
 
 const createSession = () => {
   const accessToken = randomBytes(30).toString('base64');
@@ -47,7 +46,9 @@ export const loginUser = async ({ email, password }) => {
 
   await SessionsCollection.deleteMany({ userId: user._id });
 
-   const newSession = createSession();
+  await UsersCollection.updateOne({ _id: user._id }, { status: "online" });
+
+  const newSession = createSession();
   return SessionsCollection.create({
     userId: user._id,
     ...newSession,
@@ -97,30 +98,22 @@ export const requestResetToken = async (email) => {
       expiresIn: '5m',
     },
   );
-  const resetPasswordTemplatePath = path.join(
-    TEMPLATES_PATH,
-    'reset-password-email.html',
-  );
-  const templateSource = (
-    await fs.readFile(resetPasswordTemplatePath)
-  ).toString();
+  const resetPasswordTemplatePath = path.join(TEMPLATES_PATH, 'reset-password-email.html');
+  const templateSource = (await fs.readFile(resetPasswordTemplatePath)).toString();
   const template = handlebars.compile(templateSource);
   const html = template({
     name: user.name,
-    link: `${env(FRONTEND_DOMAIN)}/reset-password?token=${resetToken}`,
+    link: `${env('FRONTEND_DOMAIN')}/reset-password?token=${resetToken}`,
   });
   try {
     await sendLetter({
-      from: env(SMTP_ENV_VARS.SMTP_FROM),
+      from: env('SMTP_FROM'),
       to: email,
       subject: 'Reset your password',
       html,
     });
   } catch {
-    throw createHttpError(
-      500,
-      'Failed to send the email, please try again later.',
-    );
+    throw createHttpError(500, 'Failed to send the email, please try again later.');
   }
 };
 
@@ -130,24 +123,16 @@ export const resetPassword = async (payload) => {
   try {
     entries = jwt.verify(payload.token, env(JWT_SECRET));
   } catch (err) {
-    if (err instanceof Error)
-      throw createHttpError(401, 'Token is expired or invalid.');
+    if (err instanceof Error) throw createHttpError(401, 'Token is expired or invalid.');
     throw err;
   }
-  const user = await UsersCollection.findOne({
-    email: entries.email,
-    _id: entries.sub,
-  });
+  const user = await UsersCollection.findOne({ email: entries.email, _id: entries.sub });
   if (!user) {
     throw createHttpError(404, 'User not found');
   }
   const encryptedPassword = await bcrypt.hash(payload.password, 10);
-  await UsersCollection.updateOne(
-    { _id: user._id },
-    { password: encryptedPassword },
-  );
+  await UsersCollection.updateOne({ _id: user._id }, { password: encryptedPassword });
 };
-
 
 export const loginOrSignupWithGoogle = async (code) => {
   const loginTicket = await validateCode(code);
