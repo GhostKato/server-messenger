@@ -6,7 +6,6 @@ let io;
 const users = {};
 
 export const setupSocket = (server) => {
-
   if (io) {
     return;
   }
@@ -32,18 +31,25 @@ export const setupSocket = (server) => {
     });
 
     socket.on("newMessage", (message) => {
-
       io.emit("newMessage", message);
     });
 
     socket.on("updateMessage", (updatedMessage) => {
-
       io.emit("updateMessage", updatedMessage);
     });
 
     socket.on("deleteMessage", (id) => {
-
       io.emit("deleteMessage", id);
+    });
+
+    socket.on("addNotification", (message) => {
+      io.emit("addNotification", message);
+    });
+
+    socket.on("deleteNotification", ({ fromId }) => {
+      if (fromId) {
+        io.emit("deleteNotification", { fromId });
+      }
     });
 
     socket.on("disconnect", () => {
@@ -53,7 +59,6 @@ export const setupSocket = (server) => {
         if (users[userId].socketId === socket.id) {
           disconnectedUserId = userId;
           delete users[userId];
-         
           break;
         }
       }

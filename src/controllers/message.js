@@ -11,7 +11,7 @@ export const getMessageController = async (req, res) => {
 
   try {
     const messages = await getAllMessages({ fromId, toId });
-    
+
     res.status(200).json({
       status: 200,
       message: 'Successfully found messages!',
@@ -58,6 +58,7 @@ export const createMessageController = async (req, res) => {
     });
 
     sendMessageToClients('newMessage', newMessage);
+    sendMessageToClients('addNotification', newMessage);
 
     res.status(201).json({
       status: 201,
