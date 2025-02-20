@@ -114,6 +114,7 @@ export const refreshUserSessionController = async (req, res) => {
 export const logoutUserController = async (req, res) => {
   const sessionId = req.cookies.sessionId;
   const session = await SessionsCollection.findOne({ _id: sessionId });
+  await UsersCollection.updateOne({ _id: session.userId }, { status: "offline" });
   sendUserStatusToClients(session.userId, "offline");
   if (sessionId) {
     await logoutUser(sessionId);
