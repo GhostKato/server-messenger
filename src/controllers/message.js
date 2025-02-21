@@ -94,6 +94,7 @@ export const deleteMessageController = async (req, res, next) => {
       return next(createHttpError(404, 'Message not found'));
     }
     sendMessageToClients('deleteMessage', messageId);
+    sendMessageToClients('deleteNotification', messageId);
     res.status(204).send();
   } catch (error) {
     console.error('Error deleting message:', error);

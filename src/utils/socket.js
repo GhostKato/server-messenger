@@ -46,6 +46,10 @@ export const setupSocket = (server) => {
       io.emit("addNotification", notification);
     });
 
+    socket.on("deleteNotification", (id) => {
+      io.emit("deleteNotification", id);
+    });
+
     socket.on("disconnect", () => {
       let disconnectedUserId = null;
 

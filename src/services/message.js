@@ -86,7 +86,7 @@ export const deleteNotifications = async (notificationIds) => {
     });
     return result;
   } catch (error) {
-    console.error('Сталася помилка:', error);
+    console.error('An error occurred:', error);
     throw new Error('Failed to delete notifications');
   }
 };
