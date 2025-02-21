@@ -42,14 +42,8 @@ export const setupSocket = (server) => {
       io.emit("deleteMessage", id);
     });
 
-    socket.on("addNotification", (message) => {
-      io.emit("addNotification", message);
-    });
-
-    socket.on("deleteNotification", ({ fromId }) => {
-      if (fromId) {
-        io.emit("deleteNotification", { fromId });
-      }
+    socket.on("addNotification", (notification) => {
+      io.emit("addNotification", notification);
     });
 
     socket.on("disconnect", () => {

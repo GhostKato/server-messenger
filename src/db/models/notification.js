@@ -1,10 +1,11 @@
 import { model, Schema } from 'mongoose';
 
-const messageSchema = new Schema(
+const notificationSchema = new Schema(
   {
-    message: {
-      type: String,
+    messageId: {
+      type: Schema.Types.ObjectId,
       required: true,
+      ref: 'messages',
     },
     fromId: {
       type: Schema.Types.ObjectId,
@@ -17,11 +18,7 @@ const messageSchema = new Schema(
       ref: 'users',
     },
   },
-  {
-    timestamps: true,
-    versionKey: false,
-  },
 );
 
-export const MessagesCollection = model('messages', messageSchema);
+export const NotificationsCollection = model('notifications', notificationSchema);
 
