@@ -17,26 +17,28 @@ This project is the server part of the messenger, in which you can send messages
 
 3. **API for frontend interaction:**
 
-  - Roouts for performing basic operations such as: registration, authorization, update, end of session, sending mail, new password.
+- Roouts for performing basic operations such as: registration, authorization, update, end of session, sending mail, new password.
 
-    - `POST /auth/register` — registering a new user.
-    - `POST /auth/login` — user authorization.
-    - `POST /auth/logout` — log out of your account.
-    - `POST /auth/refresh` — session update.
-    - `POST /auth/send-reset-email` — sending mail for password reset.
-    - `POST /auth/reset-pwd` — sending a new password.
+  - `POST /auth/register` — registering a new user.
+  - `POST /auth/login` — user authorization.
+  - `POST /auth/logout` — log out of your account.
+  - `POST /auth/refresh` — session update.
+  - `POST /auth/send-reset-email` — sending mail for password reset.
+  - `POST /auth/reset-pwd` — sending a new password.
 
-  - Roouts for performing basic operations with messages, such as: sending a message, receiving a list of messages, updating a message, deleting a message.
+- Roouts for performing basic operations with messages, such as: sending a message, receiving a list of messages, updating a message, deleting a message.
 
-    - `POST /message/:toId` — adding a new message.
-    - `GET /message/:toId` — getting message list.
-    - `PATСH /message/:messageId` — update  message.
-    - `DELETE /message/:messageId` — deleting a message.
+  - `POST /message/:toId` — adding a new message.
+  - `GET /message/:toId` — getting message list.
+  - `PATСH /message/:messageId` — update message.
+  - `DELETE /message/:messageId` — deleting a message.
+  - `GET /message/notifications` — getting notification list.
+  - `DELETE /message/notifications` — deleting a notification.
 
-  - Roouts to perform basic user operations, such as updating user data.
+- Roouts to perform basic user operations, such as updating user data.
 
-    - `POST /user/:id` — updating user data.
-    - `GET /user/all` — get all users.  
+  - `POST /user/:id` — updating user data.
+  - `GET /user/all` — get all users.
 
 4. **Safety:**
 
