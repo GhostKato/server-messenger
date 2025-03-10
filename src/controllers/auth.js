@@ -3,13 +3,9 @@ import {
   registerUser,
   refreshUsersSession,
   logoutUser,
-  requestResetToken,
-  resetPassword,
-  loginOrSignupWithGoogle,
 } from '../services/auth.js';
 import { loginUser } from '../services/auth.js';
 import { THIRTY_DAYS } from '../constants/index.js';
-import { generateAuthUrl } from '../utils/googleOAuth2.js';
 import { UsersCollection } from '../db/models/user.js';
 import { BASE_URL_USER_PHOTO } from '../constants/index.js';
 import { sendUserStatusToClients } from '../utils/socket.js';
@@ -127,71 +123,13 @@ export const logoutUserController = async (req, res) => {
 };
 
 
-export const resetEmailController = async (req, res) => {
-  await requestResetToken(req.body.email);
-
-  res.json({
-    message: 'Reset password email was successfully sent!',
-    status: 200,
-    data: {},
-  });
-};
 
 
-export const resetPasswordController = async (req, res) => {
-  await resetPassword(req.body);
-
-  res.json({
-    message: 'Password was successfully reset!',
-    status: 200,
-    data: {},
-  });
-};
 
 
-export const getGoogleOAuthUrlController = async (req, res) => {
-  const url = generateAuthUrl();
-  res.json({
-    status: 200,
-    message: 'Successfully get Google OAuth url!',
-    data: {
-      url,
-    },
-  });
-};
 
 
-export const loginWithGoogleController = async (req, res) => {
-  try {
-    const { code } = req.body;
-    if (!code) {
-      console.error('Missing "code" in the request body');
-      return res.status(400).json({ message: 'Missing "code" parameter' });
-    }
-    const { session, user } = await loginOrSignupWithGoogle(code);
-    setupSession(res, session);
 
-    sendUserStatusToClients(user._id, 'online');
 
-    res.json({
-      status: 200,
-      message: 'Successfully logged in via Google OAuth!',
-      data: {
-        accessToken: session.accessToken,
-        user: {
-          name: user.name,
-          email: user.email,
-          photo: user.photo || BASE_URL_USER_PHOTO,
-          _id: user._id,
-          status: user.status,
-        },
-      },
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: 'Internal server error',
-      error: error.message,
-      stack: error.stack,
-    });
-  }
-};
+
+
