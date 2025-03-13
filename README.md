@@ -6,11 +6,6 @@ This project is the server part of the messenger, in which you can send messages
 
 ## Features
 
-1. **Authorization and authentication:**
-
-   - Secure password change through tokens (JWT) for increased protection of personal libraries.
-   - Quick authorization and login through google accounts.
-
 2. **Storage and management messages:**
 
    - Messages are stored in a database with such data, message text, sender, recipient and metadata.
@@ -23,8 +18,6 @@ This project is the server part of the messenger, in which you can send messages
   - `POST /auth/login` — user authorization.
   - `POST /auth/logout` — log out of your account.
   - `POST /auth/refresh` — session update.
-  - `POST /auth/send-reset-email` — sending mail for password reset.
-  - `POST /auth/reset-pwd` — sending a new password.
 
 - Roouts for performing basic operations with messages, such as: sending a message, receiving a list of messages, updating a message, deleting a message.
 
@@ -67,7 +60,6 @@ This project is the server part of the messenger, in which you can send messages
 4. **Technologies and tools:**
    - **Node.js**: The server side runs on Node.js, which allows you to handle asynchronous requests and provides high performance.
    - **Express.js**: Bridge for creating RESTful API, provides simple and convenient methods for routing requests.
-   - **JWT (JSON Web Tokens)**: for password recovery.
    - **Mongoose (для MongoDB)** to work with the database.
 
 ## Stages of development
@@ -98,7 +90,6 @@ This project is the server part of the messenger, in which you can send messages
 
    - **Node.js**
    - **Express.js**
-   - **JWT**
    - **Mongoose**
    - **bcrypt**
 
@@ -108,8 +99,6 @@ This project is the server part of the messenger, in which you can send messages
 
 4. **Safety:**
 
-   - **OAuth 2.0**
-   - **JWT**
    - **HTTPS**
      **bcrypt**
 
@@ -119,4 +108,4 @@ This project is the server part of the messenger, in which you can send messages
 
 ---
 
-The project is developing a server for sending messages through the API, with support for authorization through JWT and Google. It provides message storage in MongoDB, data updates and password recovery. For security, HTTPS, bcrypt and cloud storage of photos via Cloudinary are used. The project is focused on scalability, ease of integration and a high level of data protection.
+The project is developing a server for sending messages through the API. It provides message storage in MongoDB, data updates and password recovery. For security, HTTPS, bcrypt and cloud storage of photos via Cloudinary are used. The project is focused on scalability, ease of integration and a high level of data protection.
