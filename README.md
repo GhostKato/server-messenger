@@ -6,11 +6,11 @@ This project is the server part of the messenger, in which you can send messages
 
 ## Features
 
-2. **Storage and management messages:**
+1. **Storage and management messages:**
 
    - Messages are stored in a database with such data, message text, sender, recipient and metadata.
 
-3. **API for frontend interaction:**
+2. **API for frontend interaction:**
 
 - Roouts for performing basic operations such as: registration, authorization, update, end of session, sending mail, new password.
 
@@ -33,7 +33,7 @@ This project is the server part of the messenger, in which you can send messages
   - `POST /user/:id` — updating user data.
   - `GET /user/all` — get all users.
 
-4. **Safety:**
+3. **Safety:**
 
    - Using HTTPS for Secure Connections.
    - Encrypting user passwords using algorithms such as bcrypt.
